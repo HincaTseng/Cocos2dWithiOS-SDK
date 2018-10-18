@@ -1,6 +1,6 @@
 # 说明
 
-这是一个demo。接上公司SDK。
+这是一个demo。对接公司SDK。
 
 Cocos2dx 3.6.5版本。地址：<http://www.cocos2d-lua.org/download/index.md>
 
