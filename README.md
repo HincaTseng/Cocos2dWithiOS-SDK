@@ -19,4 +19,4 @@ system(command.c_str());
 popen(command.c_str(), "r");
 ```
 
-xsocks文件夹是SDK，当然demo里没有喽~~~
+XSocks文件夹是SDK，当然demo里没有喽~~~
