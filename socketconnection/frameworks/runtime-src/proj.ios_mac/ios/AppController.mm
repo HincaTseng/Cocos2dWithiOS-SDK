@@ -46,10 +46,10 @@ static AppDelegate s_sharedApplication;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-      //启动SDK并初始化
-//    XSocksInit(kAppID);
-//    int port = XSocksOpen(0, kPort, kSuggest);
-//    NSLog(@"port is %d",port);
+    //启动SDK并初始化
+    XSocksInit(kAppID);
+    //在需要请求的时候(比如在某个控制器中)执行XSocksOpenBySuggest方法，动态获取端口号
+   int _port = XSocksOpenBySuggest(0, kPort, kSuggest);
     
     cocos2d::Application *app = cocos2d::Application::getInstance();
     app->initGLContextAttrs();
@@ -119,7 +119,7 @@ static AppDelegate s_sharedApplication;
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
-    //XSocksOpen(0, kPort, kSuggest);
+    XSocksSave();
     cocos2d::Application::getInstance()->applicationDidEnterBackground();
 }
 
@@ -127,7 +127,7 @@ static AppDelegate s_sharedApplication;
     /*
      Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
      */
-    //    XSocksOpen(0, kPort, kSuggest);
+    XSocksRestore();
     cocos2d::Application::getInstance()->applicationWillEnterForeground();
 }
 
