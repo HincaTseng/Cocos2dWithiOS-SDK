@@ -36,6 +36,7 @@
 //#import "thirdparty/XSockets/SDK头文件"
 //或者这样...
 //#import "SDK头文件"
+
 @implementation AppController
 
 #pragma mark -
@@ -48,8 +49,27 @@ static AppDelegate s_sharedApplication;
 {
     //启动SDK并初始化
     XSocksInit(kAppID);
-    //在需要请求的时候(比如在某个控制器中)执行XSocksOpenBySuggest方法，动态获取端口号
-   int _port = XSocksOpenBySuggest(0, kPort, kSuggest);
+    //在需要请求的时候执行XSocksOpen方法，动态获取端口号。int返回值写成全局的。
+     int _port = XSocksOpen(0, kPort);
+    /*//比如在某个网络请求方法 创建socket连接的控制器中，在请求网络代码的最前面添加方法。
+     
+     - (void)createSocket {
+     
+        //  1.先执行XSocksOpen方法，int变量获取端口号返回值。写成全局的。
+         _port = XSocksOpen(0, kPort);
+     
+        //  2.连接网络代码。。。
+         BOOL isContent = [_socket connectToHost:self.localTF.text onPort:_port withTimeout:10 error:&error];
+         if (isContent) {
+            NSLog(@">>>>>>>>已连接服务器");
+         } else {
+            NSLog(@"失败 %@",error.description);
+         }
+     }
+     
+     
+     */
+   
     
     cocos2d::Application *app = cocos2d::Application::getInstance();
     app->initGLContextAttrs();
