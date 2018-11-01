@@ -49,26 +49,6 @@ static AppDelegate s_sharedApplication;
 {
     //启动SDK并初始化
     XSocksInit(kAppID);
-    //在需要请求的时候执行XSocksOpen方法，动态获取端口号。int返回值写成全局的。
-     int _port = XSocksOpen(0, kPort);
-    /*//比如在某个网络请求方法 创建socket连接的控制器中，在请求网络代码的最前面添加方法。
-     
-     - (void)createSocket {
-     
-        //  1.先执行XSocksOpen方法，int变量获取端口号返回值。写成全局的。
-         _port = XSocksOpen(0, kPort);
-     
-        //  2.连接网络代码。。。
-         BOOL isContent = [_socket connectToHost:self.localTF.text onPort:_port withTimeout:10 error:&error];
-         if (isContent) {
-            NSLog(@">>>>>>>>已连接服务器");
-         } else {
-            NSLog(@"失败 %@",error.description);
-         }
-     }
-     
-     
-     */
    
     
     cocos2d::Application *app = cocos2d::Application::getInstance();
@@ -119,6 +99,20 @@ static AppDelegate s_sharedApplication;
 }
 
 
++ (void)openXsocks:(NSDictionary *)info {
+    //在需要请求的时候执行XSocksOpen方法，动态获取端口号。int返回值写成全局的。
+    int _port = XSocksOpen(0, kPort);
+    NSLog(@"port is %d\n",_port);
+    
+    int callBackId = [[info objectForKey:@"listener"] intValue];
+    cocos2d::LuaBridge:getStack()->pushString([[NSString stringWithFormat:@"%d",_port] UTF8String]);
+    cocos2d::LuaBridge:getStack()->executeFunction(1);
+    //释放引用DID
+    cocos2d::LuaBridge::releaseLuaFunctionById(callBackId);
+    
+}
+
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     /*
      Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -139,16 +133,18 @@ static AppDelegate s_sharedApplication;
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
-    XSocksSave();
+   
     cocos2d::Application::getInstance()->applicationDidEnterBackground();
+    XSocksSave();
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     /*
      Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
      */
-    XSocksRestore();
+    
     cocos2d::Application::getInstance()->applicationWillEnterForeground();
+    XSocksRestore();
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -156,8 +152,7 @@ static AppDelegate s_sharedApplication;
      Called when the application is about to terminate.
      See also applicationDidEnterBackground:.
      */
-    //关闭端口
-//    XSocksClose(0, kPort);
+
 }
 
 
