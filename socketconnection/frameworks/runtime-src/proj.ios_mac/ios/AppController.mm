@@ -56,7 +56,7 @@ static AppDelegate s_sharedApplication;
     cocos2d::GLViewImpl::convertAttrs();
     
     // Override point for customization after application launch.
-
+    
     // Add the view controller's view to the window and display.
     window = [[UIWindow alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
     CCEAGLView *eaglView = [CCEAGLView viewWithFrame: [window bounds]
@@ -98,6 +98,19 @@ static AppDelegate s_sharedApplication;
     return YES;
 }
 
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    
+    cocos2d::Application::getInstance()->applicationDidEnterBackground();
+    
+    XSocksSave();
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    
+    cocos2d::Application::getInstance()->applicationWillEnterForeground();
+    
+    XSocksRestore();
+}
 
 + (void)openXsocks:(NSDictionary *)info {
     //在需要请求的时候执行XSocksOpen方法，动态获取端口号。int返回值写成全局的。
@@ -128,24 +141,6 @@ static AppDelegate s_sharedApplication;
     cocos2d::Director::getInstance()->resume();
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    /*
-     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-     If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
-     */
-   
-    cocos2d::Application::getInstance()->applicationDidEnterBackground();
-    XSocksSave();
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    /*
-     Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
-     */
-    
-    cocos2d::Application::getInstance()->applicationWillEnterForeground();
-    XSocksRestore();
-}
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     /*
